@@ -13,7 +13,83 @@ const characters = [
   { id: 9, name: "C-3PO", age: 112 },
   { id: 10, name: "Padmé Amidala", age: 27 },
 ];
+const namesList = document.getElementById("names-list");
 
+characters.forEach(character => {
+  console.log(character.name);
+
+  const li = document.createElement("li");
+  li.textContent = character.name;
+  namesList.appendChild(li);
+});
+const youngList = document.getElementById("young-characters-list");
+
+const youngCharacters = characters.filter(character => character.age < 40);
+
+youngCharacters.forEach(character => {
+  console.log(character.name);
+
+  const li = document.createElement("li");
+  li.textContent = character.name;
+  youngList.appendChild(li);
+});
+function renderNames(list, elementId) {
+  const ul = document.getElementById(elementId);
+  ul.innerHTML = "";
+
+  list.forEach(item => {
+    if (!item.name) return;
+
+    const li = document.createElement("li");
+    li.textContent = item.name;
+    ul.appendChild(li);
+  });
+}
+renderNames(characters, "function-list");
+function filterByAge(list, maxAge) {
+  return list.filter(character => character.age < maxAge);
+}
+const under30 = filterByAge(characters, 30);
+renderNames(under30, "age-filter-list");
+function renderNamesWithErrors(list, listId, errorId) {
+  const ul = document.getElementById(listId);
+  const errorDiv = document.getElementById(errorId);
+
+  ul.innerHTML = "";
+  errorDiv.innerHTML = "";
+
+  list.forEach(item => {
+    
+    if (!item || typeof item !== "object") {
+      const errorMsg = document.createElement("p");
+      errorMsg.textContent = "Error: item is not a valid object";
+      errorDiv.appendChild(errorMsg);
+      return;
+    }
+
+ 
+    if (!item.name) {
+      const errorMsg = document.createElement("p");
+      errorMsg.textContent = "Error: object is missing a name property";
+      errorDiv.appendChild(errorMsg);
+      return;
+    }
+
+    const li = document.createElement("li");
+    li.textContent = item.name;
+    ul.appendChild(li);
+  });
+}
+
+renderNamesWithErrors(characters, "error-handling-list", "error-messages");
+const brokenCharacters = [
+  { id: 1, name: "Valid Name", age: 20 },
+  { id: 2, age: 25 },          // missing name
+  null,                        // not an object
+  { id: 4, name: "", age: 30 },// empty name (still counts as "bad" for our purposes)
+  { id: 5, name: "Another Valid Name", age: 35 }
+];
+renderNamesWithErrors(brokenCharacters, "broken-array-list", "broken-array-errors");
 // broken test data for exercise 6
 
 // 1. Iterate through the characters array and output each character's name to the console using console.log(). Then, dynamically create <li> elements for each character name and append them to the HTML unordered list element with the id "names-list".
